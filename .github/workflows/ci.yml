@@ -1,0 +1,40 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    name: Build .NET Backend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore Backend/CucinaMammaAPI/CucinaMammaAPI.csproj
+      - name: Build
+        run: dotnet build Backend/CucinaMammaAPI/CucinaMammaAPI.csproj --configuration Release
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    name: Build Angular Frontend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: |
+          cd Front-end/sito-cucina-mamma
+          npm ci
+      - name: Build Angular
+        run: |
+          cd Front-end/sito-cucina-mamma
+          npm run build
