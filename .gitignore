@@ -1,0 +1,12 @@
+# Ignora cartelle temporanee di Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vsidx
+*.cache
+*.db
+*.log
+bin/
+obj/

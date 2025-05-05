@@ -1,0 +1,48 @@
+/src/app
+│── /core                                           # Servizi globali, interfacce, helper
+│    ├── /services                                  # Servizi API globali (es. Auth, User)
+│    ├── /guards                                    # Route guards per autenticazione
+│    ├── /models                                    # Interfacce TypeScript
+│    │ 		 ├──/event-tracking.model.ts
+│    ├── /interceptors                              # HTTP interceptors (gestione errori e token)
+│    ├── /services   
+│    │ 		 ├──/CookieConsentService.ts
+│    │ 		 ├──/tracking.service.ts.ts
+│    │ 		 ├──/session.service.ts
+│── /shared                                         # Componenti condivisi
+│    ├── /components  
+│    │       ├──/admin-header:                              #Layout per il sito pubblico
+│    │   	 │    ├──/admin-header.component.html:
+│    │   	 │    ├──admin-header.component.scss:
+│    │   	 │    ├──admin-header.component.ts:
+│    │       ──/public-header:                             
+│    │   	 │    ├──/public-header.component.html:
+│    │   	 │    ├──/public-header.component.scss:
+│    │   	 │    ├──/public-header.component.ts:
+│    │ 		 ├──/footer:                             
+│    │   	 │   ├──/footer.component.html:
+│    │   	 │   ├──/footer.component.scss:
+│    │   	 │   ├──/footer.component.ts:
+│    │ 		 ├──/cookie-consent-banner:                             
+│    │   	 │   ├──/cookie-consent-banner.html:
+│    │   	 │   ├──/cookie-consent-banner.scss:
+│    │   	 │   ├──/cookie-consent-banner.ts
+│    ├──/shared.module.ts 
+│    ├── /pipes                                     # Pipe riutilizzabili
+│    ├── /directives                                # Direttive custom
+│    ├── shared.module.ts                           # Modulo condiviso
+│── /layouts                                        # Layout separati per pubblico e admin                     
+│    ├──/admin-layout:                              #Layout per il sito pubblico
+│    │   	 ├──/admin-layout.component.html:
+│    │   	 ├──/admin-layout.component.scss:
+│    │   	 ├──/admin-layout.component.ts:
+│    ├──/public-layout:                             # Layout per il gestionale
+│    │   	 ├──/public-layout.component.html:
+│    │   	 ├──/public-layout.component.scss:
+│    │   	 ├──/public-layout.component.ts:
+│── /modules            # Moduli principali (Public, Admin, Auth)
+│    ├── /public        # Modulo del sito pubblico (Home, Blog, Ricette)
+│    ├── /admin         # Modulo del gestionale
+│    ├── /auth          # Modulo autenticazione (Login, Register)
+│── app.routes.ts       # Definizione delle rotte
+│── main.ts             # Bootstrap dell'app
