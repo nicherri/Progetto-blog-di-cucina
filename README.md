@@ -90,3 +90,8 @@ dotnet run
 - Dashboard statistica e marketing
 
   ![Build](https://github.com/nicherri/Progetto-blog-di-cucina/actions/workflows/ci.yml/badge.svg)
+
+  ## 📬 Contatti
+
+- LinkedIn: [https://linkedin.com/in/nicola-schirripa](https://linkedin.com/in/nicola-schirripa)
+- Email: nicola.schirrripa97@gmail.com
