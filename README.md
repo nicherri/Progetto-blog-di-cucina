@@ -86,3 +86,6 @@ dotnet run
 - E-commerce digitale per ricettari
 - Integrazione Health & Cooking
 - Dashboard statistica e marketing
+
+  ![Build](https://github.com/nicherri/Progetto-blog-di-cucina/actions/workflows/ci.yml/badge.svg)
+
