@@ -128,7 +128,7 @@ namespace CucinaMammaAPI.Services
                     );
                 }
             }
-
+            
             // Aggiorna i campi testuali
             passaggioToUpdate.Ordine = passaggioDto.Ordine;
             passaggioToUpdate.Descrizione = passaggioDto.Descrizione;
