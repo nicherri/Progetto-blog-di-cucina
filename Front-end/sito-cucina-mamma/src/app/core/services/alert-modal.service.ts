@@ -1,6 +1,7 @@
 // core/services/alert-modal.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 export interface AlertModalData {
   title: string;
@@ -15,17 +16,37 @@ export class AlertModalService {
   private alertSubject = new BehaviorSubject<AlertModalData | null>(null);
   alert$ = this.alertSubject.asObservable();
 
+  private queue: AlertModalData[] = [];
+  private isShowing = false;
+
   showAlert(data: AlertModalData) {
-    this.alertSubject.next(data);
+    this.queue.push(data);
+    this.tryShowNext();
+  }
+
+  private tryShowNext() {
+    if (this.isShowing || this.queue.length === 0) return;
+
+    const nextAlert = this.queue.shift()!;
+    this.alertSubject.next(nextAlert);
+    this.isShowing = true;
   }
 
   closeAlert() {
     this.alertSubject.next(null);
+    this.isShowing = false;
+
+    // Mostra il prossimo dopo breve delay (per animazione uscita)
+    setTimeout(() => this.tryShowNext(), 350);
   }
 
   // ✅ Successo semplice
-  showSuccess(title: string, message: string) {
+  showSuccess(title: string, message: string, autoCloseMs = 3000) {
     this.showAlert({ title, message, type: 'success' });
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, autoCloseMs);
   }
 
   // ❌ Errore semplice

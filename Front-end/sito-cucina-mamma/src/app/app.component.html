@@ -1,11 +1,13 @@
+<!-- ✅ Modale globale, sempre presente -->
 <app-alert-modal
   *ngIf="alert"
-  [title]="alert?.title || ''"
-  [message]="alert?.message || ''"
-  [type]="alert?.type || 'warning'"
-  [showConfirm]="alert?.showConfirm ?? false"
+  [title]="alert.title || ''"
+  [message]="alert.message || ''"
+  [type]="alert.type || 'warning'"
+  [showConfirm]="alert.showConfirm ?? false"
   (close)="onClose()"
   (confirm)="onConfirm()"
 ></app-alert-modal>
 
+<!-- ⬇️ Qui viene caricato AdminLayout o PublicLayout -->
 <router-outlet></router-outlet>

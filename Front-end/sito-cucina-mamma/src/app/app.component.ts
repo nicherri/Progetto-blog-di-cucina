@@ -5,6 +5,7 @@ import { SitemapService } from './core/services/sitemap.service';
 import { TrackingService } from './core/services/tracking.service'; // Importa il tuo TrackingService
 import { UserBehaviorService } from './core/services/user-behavior.service'; // Importa il tuo UserBehaviorService
 import { Renderer2, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 import {
   AlertModalService,
@@ -14,9 +15,10 @@ import { AlertModalComponent } from './shared/components/alert-modal/alert-modal
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AlertModalComponent],
+  standalone: true,
+  imports: [RouterOutlet, AlertModalComponent, CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'LoveAndCooking';
@@ -68,6 +70,7 @@ export class AppComponent {
       }
     });
   }
+
   onConfirm() {
     // ✅ Callback opzionale su pulsante "Conferma" se serve
     this.alert = null;
@@ -75,5 +78,6 @@ export class AppComponent {
 
   onClose() {
     this.alert = null;
+    this.alertService.closeAlert(); // notifica al servizio
   }
 }

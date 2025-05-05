@@ -2,17 +2,6 @@
   <!-- Sidebar -->
   <app-admin-sidebar (toggle)="toggleSidebar()"></app-admin-sidebar>
 
-  <!-- ✅ MODALE ALERT GLOBALE -->
-  <app-alert-modal
-    *ngIf="alert"
-    [title]="alert.title"
-    [message]="alert.message"
-    [type]="alert.type"
-    [showConfirm]="alert.showConfirm ?? false"
-    (close)="onClose()"
-    (confirm)="onConfirm()"
-  ></app-alert-modal>
-
   <div class="admin-main">
     <header>
       <app-admin-header></app-admin-header>
