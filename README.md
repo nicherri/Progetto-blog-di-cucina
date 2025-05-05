@@ -77,8 +77,8 @@ dotnet run
 
 ### 📚 Documentazione
 
-- docs/ARCHITETTURA.md → Struttura tecnica e flusso dati
-- .github/workflows/ci.yml → Build automatica
+- [docs/ARCHITETTURA.md] → Struttura tecnica e flusso dati
+- [.github/workflows/ci.yml] → Build automatica
 - [docs/Features.md](docs/Features.md)
 
 ### 📈 Sviluppi futuri
@@ -89,4 +89,3 @@ dotnet run
 - Dashboard statistica e marketing
 
   ![Build](https://github.com/nicherri/Progetto-blog-di-cucina/actions/workflows/ci.yml/badge.svg)
-
