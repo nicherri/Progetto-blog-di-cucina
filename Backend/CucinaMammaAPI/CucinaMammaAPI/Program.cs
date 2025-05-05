@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using CucinaMammaAPI.Interfaces;
 using CucinaMammaAPI.Services;
 using System.Text.Json.Serialization;
-using FluentValidation.AspNetCore;
 using FluentValidation;
+using FluentValidation.AspNetCore;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,14 +44,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services
-       .AddFluentValidationAutoValidation()
-        .AddFluentValidation(fv =>
-        {
-            fv.RegisterValidatorsFromAssemblyContaining<Program>();
-        });
-
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
+       .AddValidatorsFromAssemblyContaining<Program>()     // trova tutti i validator
+       .AddFluentValidationAutoValidation()                // valida i DTO in automatico
+       .AddFluentValidationClientsideAdapters();           // opz., per MVC/Razor
 // 📌 4️⃣ Registra il Service
 builder.Services.AddScoped<ICategoriaRepository, CategoriaService>();
 builder.Services.AddScoped<IImmagineService, ImmagineService>();
