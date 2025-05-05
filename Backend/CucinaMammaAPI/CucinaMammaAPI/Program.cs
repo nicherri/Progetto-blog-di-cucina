@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using CucinaMammaAPI.Interfaces;
 using CucinaMammaAPI.Services;
 using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,15 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
+builder.Services
+       .AddFluentValidationAutoValidation()
+        .AddFluentValidation(fv =>
+        {
+            fv.RegisterValidatorsFromAssemblyContaining<Program>();
+        });
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // 📌 4️⃣ Registra il Service
 builder.Services.AddScoped<ICategoriaRepository, CategoriaService>();
@@ -74,6 +85,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+app.UseMiddleware<CucinaMammaAPI.Infrastructure.Middleware.GlobalErrorMiddleware>();
+
 
 // 📌 9️⃣ Middleware
 app.UseCors("AllowAllOrigins");
