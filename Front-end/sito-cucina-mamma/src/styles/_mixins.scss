@@ -1,0 +1,9 @@
+@mixin drag-smooth {
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    top 0.25s ease,
+    left 0.25s ease;
+  will-change: transform;
+  flex-shrink: 0;
+}

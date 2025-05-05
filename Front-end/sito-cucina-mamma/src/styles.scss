@@ -1,0 +1,87 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+} /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+:root {
+  --primaryColor: #ff9800;
+  --backgroundColor: #ffffff;
+  --fontFamily: Arial, sans-serif;
+}
+
+body {
+  background-color: var(--backgroundColor);
+  font-family: var(--fontFamily);
+  background-color: #f8f9fa; /* Colore di sfondo chiaro */
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px; /* Aumenta la distanza tra i puntini */
+  position: relative;
+}
+
+/* Effetto sfumato */
+body::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Effetto hover sui puntini */
+body:hover {
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.3) 1px,
+    transparent 1px
+  );
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+@mixin drag-smooth {
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    top 0.25s ease,
+    left 0.25s ease;
+  will-change: transform;
+  flex-shrink: 0;
+}
+
+body.in-drag-mode .tooltip-global,
+body.in-drag-mode .hover-info,
+body.in-drag-mode .card-wrapper:hover {
+  display: none !important;
+}

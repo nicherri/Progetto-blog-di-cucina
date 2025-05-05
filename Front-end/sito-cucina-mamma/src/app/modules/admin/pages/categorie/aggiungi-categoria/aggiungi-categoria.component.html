@@ -1,0 +1,156 @@
+<h2 class="text-3xl font-bold mb-6 text-center text-[#1b512d]">
+  Aggiungi Categoria
+</h2>
+
+<!-- ⚠️ Messaggio globale di errore -->
+<div
+  *ngIf="categoriaNonValidaOImmaginiIncomplete"
+  class="alert-box-warning mb-4"
+>
+  <app-icon-warning class="icon-warning icon-inline"></app-icon-warning>
+  <span>
+    Alcuni campi obbligatori risultano incompleti: controlla i campi del form e
+    i metadati delle immagini.
+  </span>
+</div>
+
+<form [formGroup]="categoriaForm" (ngSubmit)="submit()" class="form-wrapper">
+  <!-- Nome -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error': submitted && categoriaForm.get('nome')?.invalid,
+      }"
+      class="form-label"
+    >
+      Nome*
+      <app-icon-warning
+        *ngIf="submitted && categoriaForm.get('nome')?.invalid"
+        title="Inserisci il nome della categoria"
+        class="icon-inline"
+      ></app-icon-warning>
+    </label>
+    <input
+      type="text"
+      formControlName="nome"
+      [ngClass]="{
+        'input-error': submitted && categoriaForm.get('nome')?.invalid,
+      }"
+    />
+  </div>
+
+  <!-- Descrizione -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error': submitted && categoriaForm.get('descrizione')?.invalid,
+      }"
+      class="form-label"
+    >
+      Descrizione*
+      <app-icon-warning
+        *ngIf="submitted && categoriaForm.get('descrizione')?.invalid"
+        title="Inserisci una descrizione per la categoria"
+        class="icon-inline"
+      ></app-icon-warning>
+    </label>
+    <textarea
+      formControlName="descrizione"
+      [ngClass]="{
+        'input-error': submitted && categoriaForm.get('descrizione')?.invalid,
+      }"
+    ></textarea>
+  </div>
+
+  <!-- Slug -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error': submitted && categoriaForm.get('slug')?.invalid,
+      }"
+      class="form-label"
+    >
+      Slug (modificabile)*
+      <app-icon-warning
+        *ngIf="submitted && categoriaForm.get('slug')?.invalid"
+        title="Inserisci uno slug valido"
+        class="icon-inline"
+      ></app-icon-warning>
+    </label>
+    <input
+      type="text"
+      formControlName="slug"
+      placeholder="es. antipasti-veloci"
+      [ngClass]="{
+        'input-error': submitted && categoriaForm.get('slug')?.invalid,
+      }"
+    />
+    <small class="text-sm text-gray-500">
+      Lo slug viene generato automaticamente ma puoi modificarlo se desideri un
+      URL personalizzato.
+    </small>
+  </div>
+
+  <!-- SEO Title -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error': submitted && categoriaForm.get('seoTitle')?.invalid,
+      }"
+      class="form-label"
+    >
+      Titolo SEO*
+      <app-icon-warning
+        *ngIf="submitted && categoriaForm.get('seoTitle')?.invalid"
+        title="Il titolo SEO è obbligatorio (max 70 caratteri)"
+        class="icon-inline"
+      ></app-icon-warning>
+    </label>
+    <input
+      type="text"
+      formControlName="seoTitle"
+      placeholder="Massimo 70 caratteri"
+      maxlength="70"
+      [ngClass]="{
+        'input-error': submitted && categoriaForm.get('seoTitle')?.invalid,
+      }"
+    />
+  </div>
+
+  <!-- SEO Description -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error':
+          submitted && categoriaForm.get('seoDescription')?.invalid,
+      }"
+      class="form-label"
+    >
+      Descrizione SEO*
+      <app-icon-warning
+        *ngIf="submitted && categoriaForm.get('seoDescription')?.invalid"
+        title="La descrizione SEO è obbligatoria (max 160 caratteri)"
+        class="icon-inline"
+      ></app-icon-warning>
+    </label>
+    <textarea
+      formControlName="seoDescription"
+      placeholder="Massimo 160 caratteri"
+      maxlength="160"
+      [ngClass]="{
+        'input-error':
+          submitted && categoriaForm.get('seoDescription')?.invalid,
+      }"
+    ></textarea>
+  </div>
+
+  <!-- Immagini -->
+  <div class="form-group">
+    <label class="form-label">Immagini</label>
+    <app-gestione-immagini
+      (immaginiAggiornate)="immagini = $event"
+    ></app-gestione-immagini>
+  </div>
+
+  <button type="submit" class="btn-submit">Salva Categoria</button>
+</form>

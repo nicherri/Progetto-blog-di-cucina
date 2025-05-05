@@ -1,0 +1,70 @@
+// icone menu a tre punti
+.icon-dots {
+  cursor: pointer;
+  transform-origin: center;
+  width: 100%;
+}
+
+.dot {
+  transform-origin: center;
+}
+
+.icon-dots:hover .dot1 {
+  animation: swapDot1 1.6s ease-in-out;
+}
+
+.icon-dots:hover .dot2 {
+  animation: swapDot2 1.6s ease-in-out;
+}
+
+.icon-dots:hover .dot3 {
+  animation: swapDot3 1.6s ease-in-out;
+}
+
+@keyframes swapDot1 {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes swapDot2 {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes swapDot3 {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

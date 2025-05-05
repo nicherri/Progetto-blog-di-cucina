@@ -1,0 +1,50 @@
+{
+  "header": {
+    "background": {
+      "type": "color",
+      "label": "Colore di Sfondo"
+    },
+    "color": {
+      "type": "color",
+      "label": "Colore del Testo"
+    },
+    "font-family": {
+      "type": "select",
+      "label": "Font",
+      "options": [
+        "Arial, sans-serif",
+        "Times New Roman, serif",
+        "Courier New, monospace"
+      ]
+    }
+  },
+  "text": {
+    "color": {
+      "type": "color",
+      "label": "Colore del Testo"
+    },
+    "font-size": {
+      "type": "number",
+      "label": "Dimensione Font (px)"
+    },
+    "font-weight": {
+      "type": "select",
+      "label": "Spessore Font",
+      "options": ["normal", "bold", "lighter"]
+    }
+  },
+  "image": {
+    "width": {
+      "type": "number",
+      "label": "Larghezza (px)"
+    },
+    "height": {
+      "type": "number",
+      "label": "Altezza (px)"
+    },
+    "border-radius": {
+      "type": "number",
+      "label": "Angoli Arrotondati (px)"
+    }
+  }
+}

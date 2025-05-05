@@ -1,0 +1,91 @@
+<div class="modal-container">
+  <div class="modal-close">
+    <app-icon-close
+      (click)="onChiudi()"
+      class="icon_close"
+      aria-label="Chiudi"
+    ></app-icon-close>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modal-content">
+    <h2>Modifica Metadati Immagine</h2>
+
+    <label
+      [class.invalid-label]="
+        form.get('title')?.invalid && form.get('title')?.touched
+      "
+    >
+      Titolo *
+      <app-icon-warning
+        tooltip="⚠️ Il titolo deve essere descrittivo e contenere parole chiave rilevanti per il contenuto dell'immagine."
+      ></app-icon-warning>
+    </label>
+    <input
+      type="text"
+      formControlName="title"
+      [class.invalid]="form.get('title')?.invalid && form.get('title')?.touched"
+    />
+
+    <label
+      [class.invalid-label]="
+        form.get('caption')?.invalid && form.get('caption')?.touched
+      "
+    >
+      Descrizione *
+      <app-icon-warning
+        tooltip="⚠️ Una descrizione più estesa, utile per spiegare meglio il contesto dell'immagine."
+      ></app-icon-warning>
+    </label>
+    <textarea
+      rows="2"
+      formControlName="caption"
+      [class.invalid]="
+        form.get('caption')?.invalid && form.get('caption')?.touched
+      "
+    ></textarea>
+
+    <label
+      [class.invalid-label]="
+        form.get('alt')?.invalid && form.get('alt')?.touched
+      "
+    >
+      Alt *
+      <app-icon-warning
+        tooltip="⚠️ Il campo alt descrive brevemente il contenuto dell'immagine. È fondamentale per la SEO e per l'accessibilità dei non vedenti."
+      ></app-icon-warning>
+    </label>
+    <input
+      type="text"
+      formControlName="alt"
+      [class.invalid]="form.get('alt')?.invalid && form.get('alt')?.touched"
+    />
+
+    <label
+      [class.invalid-label]="
+        form.get('nomeFileSeo')?.invalid && form.get('nomeFileSeo')?.touched
+      "
+    >
+      Nome file SEO *
+      <app-icon-warning
+        tooltip="⚠️ Il nome del file dovrebbe essere breve, descrittivo e separato da trattini (es. torta-cioccolato.jpg)."
+      ></app-icon-warning>
+    </label>
+    <input
+      type="text"
+      formControlName="nomeFileSeo"
+      [class.invalid]="
+        form.get('nomeFileSeo')?.invalid && form.get('nomeFileSeo')?.touched
+      "
+    />
+
+    <label class="checkbox">
+      <input type="checkbox" formControlName="isCover" />
+      Copertina
+    </label>
+
+    <div class="modal-actions">
+      <button type="submit">Salva</button>
+      <button type="button" (click)="onChiudi()">Annulla</button>
+    </div>
+  </form>
+</div>

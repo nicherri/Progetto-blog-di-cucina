@@ -1,0 +1,76 @@
+<div
+  class="sidebar"
+  [class.open]="isSidebarOpen"
+  (click)="toggleSidebar($event)"
+>
+  <ul class="menu">
+    <!-- DASHBOARD -->
+    <li (click)="handleClick('/admin', $event)">
+      <i class="fas fa-tachometer-alt" (click)="toggleSidebar($event)"></i>
+      <span class="menu-text" *ngIf="isSidebarOpen">Dashboard</span>
+    </li>
+
+    <!-- RICETTE -->
+    <li (click)="toggleDropdown('ricette', $event)">
+      <i class="fas fa-utensils" (click)="toggleSidebar($event)"></i>
+      <span class="menu-text" *ngIf="isSidebarOpen">Ricette</span>
+      <i
+        class="fas fa-chevron-down"
+        *ngIf="isSidebarOpen"
+        [class.rotate]="menuOpen['ricette']"
+      ></i>
+    </li>
+    <ul *ngIf="menuOpen['ricette'] && isSidebarOpen" class="submenu">
+      <li (click)="handleClick('/admin/ricette', $event)">
+        <i class="fas fa-list"></i>
+        <span class="menu-text">Elenco Ricette</span>
+      </li>
+      <li (click)="handleClick('/admin/ricette/aggiungi', $event)">
+        <i class="fas fa-plus"></i>
+        <span class="menu-text">Aggiungi Ricetta</span>
+      </li>
+    </ul>
+
+    <!-- INGREDIENTI -->
+    <li (click)="toggleDropdown('ingredienti', $event)">
+      <i class="fas fa-carrot" (click)="toggleSidebar($event)"></i>
+      <span class="menu-text" *ngIf="isSidebarOpen">Ingredienti</span>
+      <i
+        class="fas fa-chevron-down"
+        *ngIf="isSidebarOpen"
+        [class.rotate]="menuOpen['ingredienti']"
+      ></i>
+    </li>
+    <ul *ngIf="menuOpen['ingredienti'] && isSidebarOpen" class="submenu">
+      <li (click)="handleClick('/admin/ingredienti', $event)">
+        <i class="fas fa-list"></i>
+        <span class="menu-text">Elenco Ingredienti</span>
+      </li>
+      <li (click)="handleClick('/admin/ingredienti/aggiungi', $event)">
+        <i class="fas fa-plus"></i>
+        <span class="menu-text">Aggiungi Ingrediente</span>
+      </li>
+    </ul>
+
+    <!-- CATEGORIE -->
+    <li (click)="toggleDropdown('categorie', $event)">
+      <i class="fas fa-tags" (click)="toggleSidebar($event)"></i>
+      <span class="menu-text" *ngIf="isSidebarOpen">Categorie</span>
+      <i
+        class="fas fa-chevron-down"
+        *ngIf="isSidebarOpen"
+        [class.rotate]="menuOpen['categorie']"
+      ></i>
+    </li>
+    <ul *ngIf="menuOpen['categorie'] && isSidebarOpen" class="submenu">
+      <li (click)="handleClick('/admin/categorie', $event)">
+        <i class="fas fa-list"></i>
+        <span class="menu-text">Elenco Categorie</span>
+      </li>
+      <li (click)="handleClick('/admin/categorie/aggiungi', $event)">
+        <i class="fas fa-plus"></i>
+        <span class="menu-text">Aggiungi Categoria</span>
+      </li>
+    </ul>
+  </ul>
+</div>

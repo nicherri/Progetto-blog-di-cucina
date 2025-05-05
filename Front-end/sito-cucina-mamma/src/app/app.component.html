@@ -1,0 +1,11 @@
+<app-alert-modal
+  *ngIf="alert"
+  [title]="alert?.title || ''"
+  [message]="alert?.message || ''"
+  [type]="alert?.type || 'warning'"
+  [showConfirm]="alert?.showConfirm ?? false"
+  (close)="onClose()"
+  (confirm)="onConfirm()"
+></app-alert-modal>
+
+<router-outlet></router-outlet>

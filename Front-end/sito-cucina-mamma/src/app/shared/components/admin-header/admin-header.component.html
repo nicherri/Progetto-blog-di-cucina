@@ -1,0 +1,26 @@
+<header class="admin-header">
+  <div class="logo">
+    <span class="love">Love</span>
+    <span class="and">&</span>
+    <span class="cooking">Cooking</span>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="Cerca..." />
+    <i class="fas fa-search search-icon"></i>
+  </div>
+  <div class="profile-container">
+    <span class="welcome-text" *ngIf="username">{{ username }}</span>
+    <div (click)="toggleProfileMenu()" class="icons">
+      <i class="fas fa-user-circle profile-icon"></i>
+      <i class="fas fa-chevron-down dropdown-icon"></i>
+    </div>
+    <div class="profile-dropdown" [class.open]="isProfileMenuOpen">
+      <ul>
+        <li (click)="goToSettings()">
+          <i class="fas fa-cog"></i> Impostazioni
+        </li>
+        <li (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</li>
+      </ul>
+    </div>
+  </div>
+</header>

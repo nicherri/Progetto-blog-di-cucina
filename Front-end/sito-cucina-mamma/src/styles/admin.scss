@@ -1,0 +1,16 @@
+@import './variables';
+@import './typography';
+@import './buttons';
+@import './tables';
+@import './modals';
+
+body.admin {
+  background-color: $color-bianco;
+
+  .contenitore {
+    padding: $spacer-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-md;
+  }
+}

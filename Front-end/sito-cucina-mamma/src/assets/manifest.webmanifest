@@ -1,0 +1,22 @@
+{
+  "name": "Love&Cooking",
+  "short_name": "Love&Cooking",
+  "description": "Ricette fatte in casa, gluten free, con amore!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcfcfe",
+  "theme_color": "#a5c38d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

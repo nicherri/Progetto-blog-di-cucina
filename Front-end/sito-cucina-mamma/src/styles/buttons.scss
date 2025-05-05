@@ -1,0 +1,29 @@
+.btn-crea {
+  background-color: $color-giallo;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: $radius-md;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $color-rosso;
+  }
+}
+
+.btn-action {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+  color: $color-grigio;
+
+  &.delete:hover {
+    color: $color-rosso;
+    transform: scale(1.1);
+  }
+}

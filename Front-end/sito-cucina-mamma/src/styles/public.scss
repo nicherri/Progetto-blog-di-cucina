@@ -1,0 +1,15 @@
+@import './variables';
+@import './typography';
+@import './buttons';
+@import './tables';
+@import './modals';
+
+body.public {
+  background-color: white;
+
+  header,
+  footer {
+    background-color: $color-verde;
+    color: white;
+  }
+}

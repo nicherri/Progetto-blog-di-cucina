@@ -1,0 +1,12 @@
+<div class="cookie-banner" *ngIf="showBanner">
+  <p>
+    Utilizziamo cookie tecnici necessari e cookie di analisi. <br />
+    <strong>I cookie tecnici</strong> sono sempre attivi per motivi di sicurezza
+    e funzionalità. <br />
+    <strong>I cookie di analisi</strong> aiutano a raccogliere statistiche
+    anonime sul sito.<br />
+    Scegli se abilitarli:
+  </p>
+  <button (click)="acceptAnalytics()">Accetto i cookie di analisi</button>
+  <button (click)="denyAnalytics()">Rifiuto i cookie di analisi</button>
+</div>

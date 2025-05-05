@@ -1,0 +1,119 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 60px;
+  height: 90vh;
+  background: linear-gradient(135deg, #a5c38d, #1b512d);
+  transition: width 0.3s ease-in-out;
+  overflow: hidden;
+  color: white;
+  position: fixed;
+  left: 20px;
+  top: 5vh;
+  z-index: 100;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar.open {
+  width: 240px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+}
+.sidebar li:hover {
+  background: #474973;
+}
+
+.submenu li:hover {
+  background: #474973;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s;
+  border-radius: 8px;
+  margin: 5px;
+}
+
+.sidebar li:hover {
+  background: #474973;
+}
+
+.sidebar li i {
+  font-size: 20px;
+  margin-right: 15px;
+}
+
+.menu-text {
+  display: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.open .menu-text {
+  display: inline-block;
+  opacity: 1;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  border-radius: 5px;
+}
+
+.menu li:hover {
+  background: #474973;
+}
+
+.menu i {
+  width: 30px;
+  text-align: center;
+}
+
+.menu ul {
+  list-style: none;
+  padding-left: 20px;
+  margin: 0;
+  transition: max-height 0.3s ease-out;
+}
+
+.submenu {
+  list-style: none;
+  padding-left: 20px;
+  transition: max-height 0.3s ease;
+}
+
+.submenu li {
+  padding: 8px 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.fas.fa-chevron-down {
+  margin-left: auto;
+  transition: transform 0.3s;
+}
+
+.fas.fa-chevron-down.rotate {
+  transform: rotate(180deg);
+}

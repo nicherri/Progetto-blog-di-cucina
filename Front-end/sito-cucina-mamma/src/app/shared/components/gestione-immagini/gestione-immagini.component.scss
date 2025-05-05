@@ -1,0 +1,496 @@
+:host {
+  display: block;
+  color: inherit; // <-- fondamentale per ereditare da .card-aggiungi
+}
+
+//tolbar e dropzone
+// --- DROPZONE OVERLAY (GRANDE) ---
+.dropzone-overlay {
+  position: fixed;
+  top: 70px; /* Adatta se hai header */
+  left: 70px; /* Adatta se hai sidebar */
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border: 3px dashed #ffb749;
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  pointer-events: all;
+  animation: fadeInOverlay 0.4s ease forwards;
+}
+
+.dropzone-overlay.ng-leave {
+  opacity: 1;
+  animation: fadeOutOverlay 0.4s ease forwards;
+}
+
+.dropzone-message {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3d3d3d;
+  text-align: center;
+  padding: 2rem;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+// --- ANIMAZIONI ---
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// --- TOOLBAR (DOVE STA IL PULSANTE +) ---
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2; /* Sopra la griglia */
+}
+
+.card-aggiungi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 1rem;
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #3d3d3d;
+  background: #f9f9f9;
+  color: #3d3d3d;
+  cursor: pointer;
+  border-radius: 12px;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
+
+  &:hover {
+    background: #f0f0f0;
+    border-color: #ffb749;
+    color: #ffb749;
+  }
+}
+
+//gestione immagini
+.gestione-immagini-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.immagini-grid {
+  display: flex;
+  flex-wrap: wrap; /* 🔥 Permette di andare a capo */
+  flex-direction: row;
+  position: relative;
+  gap: 1rem; /* 🔥 Così separa un pochino le card */
+  max-width: 100%; /* 🔥 Evita che cresca oltre la pagina */
+  touch-action: none; /* 🔥 Evita conflitti tap/scroll */
+  user-select: none;
+  min-height: 220px;
+  transition: all 0.2s ease;
+}
+
+/* ✅ Ottimizzato per il touch */
+.immagini-grid {
+  touch-action: pan-y; /* Evita blocchi verticali su touch */
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+/* ✅ NEW: Imposta minHeight alla griglia durante il drag */
+.immagini-grid.drag-attiva {
+  min-height: 400px;
+}
+
+@mixin drag-smooth {
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    top 0.25s ease,
+    left 0.25s ease;
+  will-change: transform;
+  flex-shrink: 0;
+}
+
+.card-wrapper {
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    top 0.25s ease,
+    left 0.25s ease;
+  will-change: transform;
+  flex-shrink: 0;
+  position: relative;
+  margin: 0 1rem;
+  width: 200px;
+  height: 200px;
+}
+
+.card-wrapper:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease-in-out;
+  z-index: 20; // porta davanti la card durante hover
+}
+
+.card-wrapper:not(.cdk-drag-placeholder).cdk-drag-animating {
+  transform: translateX(0) scale(1.03);
+  z-index: 5;
+}
+
+.card-wrapper.dragging {
+  opacity: 0.6;
+  transform: scale(0.95);
+}
+
+.card-wrapper.drag-over-row {
+  outline: 3px dashed rgba(255, 183, 73, 0.7);
+  outline-offset: -6px;
+  animation: pulseRow 1s infinite;
+}
+
+@keyframes pulseRow {
+  0% {
+    outline-color: rgba(255, 183, 73, 0.3);
+  }
+  50% {
+    outline-color: rgba(255, 183, 73, 1);
+  }
+  100% {
+    outline-color: rgba(255, 183, 73, 0.3);
+  }
+}
+
+.card-wrapper.moving {
+  transform: translateY(4px) scale(1.04);
+  z-index: 10;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card-wrapper.dragging .icon-close,
+.card-wrapper.dragging .icon-dots {
+  display: none !important;
+}
+
+///palceholder
+.placeholder-slot {
+  width: 200px;
+  height: 200px;
+  border: 3px dashed #ffb749;
+  background-color: rgba(255, 247, 230, 0.8);
+  border-radius: 12px;
+  box-shadow: inset 0 0 8px rgba(255, 183, 73, 0.5);
+  animation: slotPulse 0.8s ease-in-out infinite alternate;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+@keyframes slotPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+/* Card Immagine */
+.card-immagine {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #ffb749;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-immagine img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay Warning */
+.overlay-warning {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5; /* sotto le icone */
+  pointer-events: none;
+}
+
+.warning-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  transition:
+    opacity 0.4s ease,
+    backdrop-filter 0.4s ease;
+  opacity: 1;
+  backdrop-filter: blur(6px);
+}
+
+.warning-icon {
+  width: 48px;
+  height: 48px;
+  z-index: 6;
+  pointer-events: auto;
+  cursor: pointer;
+  color: #e94e1b;
+}
+
+/* Azioni Icone */
+.card-azione {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 6px;
+  z-index: 10; /* sopra overlay */
+}
+
+.icon-close,
+.icon-dots {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.icon-close {
+  position: relative;
+  right: 9.3rem;
+  bottom: 1.9rem;
+}
+
+.icon-dots {
+  position: relative;
+  bottom: 1.9rem;
+  left: 1.3rem;
+}
+
+/* Tooltip */
+.tooltip-global {
+  position: absolute;
+  top: -65px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff3cd;
+  color: #856404;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  width: 320px;
+  z-index: 20;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  white-space: normal;
+  pointer-events: none;
+}
+
+//Incon_plus
+.card-aggiungi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: 2px dashed #3d3d3d;
+  height: 200px;
+  width: 200px;
+  color: #3d3d3d;
+}
+
+.card-aggiungi:hover {
+  background-color: #f3f3f3;
+  border: 3px dashed #ffb749;
+  color: #ffb749;
+}
+
+.card-wrapper.card-warning .card-immagine {
+  border: 2px solid #e94e1b !important;
+  box-shadow: 0 0 0 2px rgba(233, 78, 27, 0.2);
+}
+
+.img-zoomabile {
+  transition: transform 0.2s ease-in-out;
+}
+.img-zoomabile:hover {
+  transform: scale(1.03);
+}
+
+.overlay-zoom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modale-zoom {
+  position: relative;
+  width: 650px;
+  height: 450px;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modale-zoom img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.icon-close-zoom {
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  width: 38px;
+  height: 38px;
+  z-index: 1000;
+}
+
+//barra di divisione card
+.inserimento-bar {
+  position: absolute;
+  width: 6px;
+  height: 200px;
+  background: linear-gradient(to bottom, #ffb749, #ffc864);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(255, 183, 73, 0.8);
+  transform: translateX(-50%);
+  animation: fadeInBarra 0.2s ease-in-out;
+  transition:
+    left 0.1s ease,
+    top 0.1s ease,
+    height 0.2s ease;
+  z-index: 100;
+}
+
+@keyframes fadeInBarra {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+.ghost-preview {
+  border: 2px solid #ffb749;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  background: white;
+  transform: scale(1.05);
+}
+
+/* ✅ Ghost preview effetto fluttuante + hover dinamico */
+::ng-deep .cdk-drag-preview {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  border: 2px solid #ffb749;
+  border-radius: 14px;
+  opacity: 0.95;
+  transform: rotate(2deg) scale(1.05);
+  transition: transform 0.2s ease-in-out;
+  pointer-events: none;
+  overflow: hidden !important;
+  max-width: 200px;
+  max-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+::ng-deep .cdk-drag-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+::ng-deep .cdk-drag-preview:hover {
+  transform: rotate(0deg) scale(1.07);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+}
+
+.card-wrapper.dragging .icon-close,
+.card-wrapper.dragging .icon-dots,
+::ng-deep .cdk-drag-preview .icon-close,
+::ng-deep .cdk-drag-preview .icon-dots {
+  display: none !important;
+}
+
+::ng-deep .cdk-drag-placeholder {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ✅ Etichetta debug per testing */
+.debug-label {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 2px 5px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@media (prefers-color-scheme: dark) {
+  .placeholder-slot {
+    background-color: rgba(255, 183, 73, 0.1);
+    border: 2px dashed #ffc864;
+    box-shadow: 0 0 8px rgba(255, 183, 73, 0.3);
+  }
+
+  ::ng-deep .cdk-drag-preview {
+    background: #1e1e1e;
+    color: #fefefe;
+    border-color: #ffc864;
+    box-shadow: 0 12px 28px rgba(255, 183, 73, 0.15);
+  }
+}
+
+.card-warning .warning-mask {
+  background-color: rgba(255, 0, 0, 0.1); // leggero overlay rosso
+}

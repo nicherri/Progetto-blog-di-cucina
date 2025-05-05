@@ -1,0 +1,125 @@
+<section class="gestione-immagini-container">
+  <!-- DROPZONE GRANDE SE VISIBILE -->
+  <div class="dropzone-overlay" *ngIf="dropzoneAttiva">
+    <div class="dropzone-message">📂 Rilascia qui per caricare immagini</div>
+  </div>
+
+  <!-- Griglia immagini -->
+  <div
+    cdkDropList
+    [cdkDropListData]="immagini"
+    class="immagini-grid"
+    [cdkDropListSortingDisabled]="true"
+    (cdkDropListDropped)="spostaImmagine($event)"
+    (cdkDropListEntered)="startDrag()"
+    (cdkDropListExited)="stopDrag()"
+  >
+    <!-- ===>  BARRA di inserimento -->
+    <div
+      *ngIf="indiceInserimento !== null"
+      class="inserimento-bar"
+      [style.left.px]="posizioneInserimentoPx"
+      [style.top.px]="posizioneInserimentoTopPx"
+    ></div>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div
+        class="card-immagine card-aggiungi"
+        (click)="apriFileInput()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onFileChange($event)"
+        cdkDragDisabled
+      >
+        <app-icon-plus></app-icon-plus>
+      </div>
+      <input
+        id="fileInput"
+        type="file"
+        hidden
+        multiple
+        (change)="onFileChange($event)"
+      />
+    </div>
+    <ng-container *ngFor="let img of immagini; let i = index">
+      <!-- Placeholder tra immagini -->
+      <div *ngIf="indiceInserimento === i" class="placeholder-slot"></div>
+
+      <div
+        class="card-wrapper"
+        cdkDrag
+        (cdkDragStarted)="startDrag($event)"
+        (cdkDragMoved)="onDragMoved($event)"
+        [class.card-warning]="hasMetadatiMancanti(img)"
+      >
+        <div class="card-immagine">
+          <img
+            [src]="img.anteprima || img.url"
+            alt="Anteprima"
+            (click)="apriZoom(img)"
+            class="img-zoomabile"
+          />
+
+          <div *ngIf="hasMetadatiMancanti(img)" class="overlay-warning">
+            <div class="warning-mask"></div>
+            <app-icon-warning
+              class="warning-icon"
+              (mouseenter)="mostraTooltip(i)"
+              (mouseleave)="nascondiTooltip()"
+              (click)="apriModaleMetadati(img, i)"
+            ></app-icon-warning>
+          </div>
+        </div>
+
+        <div class="card-azione">
+          <app-icon-close
+            class="icon-close"
+            (click)="rimuovi(i)"
+          ></app-icon-close>
+          <app-icon-dots
+            class="icon-dots"
+            (click)="apriModaleMetadati(img, i)"
+          ></app-icon-dots>
+        </div>
+
+        <div
+          class="tooltip-global"
+          *ngIf="tooltipVisibile && indiceTooltip === i"
+        >
+          ⚠️ Per favore compila <strong>ALT</strong> e <strong>TITLE</strong>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Placeholder alla fine -->
+    <div
+      *ngIf="indiceInserimento === immagini.length"
+      class="placeholder-slot"
+    ></div>
+  </div>
+</section>
+
+<!-- ✅ TEMPLATE GHOST per anteprima trascinata -->
+<ng-template #ghostPreview let-data>
+  <div class="card-immagine ghost-preview">
+    <img [src]="data.anteprima || data.url" alt="" />
+  </div>
+</ng-template>
+
+<!-- Modali -->
+<app-immagine-metadati-modal
+  *ngIf="modaleAttivo"
+  [immagine]="immagineSelezionata"
+  (chiudi)="modaleAttivo = false"
+  (salva)="salvaMetadati($event)"
+></app-immagine-metadati-modal>
+
+<div class="overlay-zoom" *ngIf="modaleZoomAttivo">
+  <div class="modale-zoom">
+    <app-icon-close
+      class="icon-close-zoom"
+      (click)="chiudiZoom()"
+    ></app-icon-close>
+    <img [src]="immagineZoom" alt="Immagine ingrandita" />
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.modale-conferma {
+  background: white;
+  padding: $spacer-lg;
+  border-radius: $radius-md;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+
+  h3 {
+    color: $color-verde;
+  }
+
+  .azioni {
+    margin-top: $spacer-md;
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      flex: 1;
+      margin: 0 $spacer-xs;
+    }
+  }
+}

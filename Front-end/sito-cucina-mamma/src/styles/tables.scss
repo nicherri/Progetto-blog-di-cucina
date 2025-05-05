@@ -1,0 +1,37 @@
+.tabella-categorie {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  border-radius: $radius-md;
+  overflow: hidden;
+
+  th,
+  td {
+    padding: $spacer-sm $spacer-md;
+    text-align: left;
+  }
+
+  th {
+    background-color: $color-verde;
+    color: white;
+    font-weight: 600;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tr:hover {
+    background-color: rgba($color-verde, 0.05);
+    cursor: pointer;
+  }
+
+  .cover-img {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: $radius-sm;
+    border: 2px solid $color-giallo;
+  }
+}

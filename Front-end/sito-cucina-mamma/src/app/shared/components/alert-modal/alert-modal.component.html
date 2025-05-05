@@ -1,0 +1,17 @@
+<div class="modal-overlay">
+  <div class="alert-modal" [ngClass]="type">
+    <div class="modal-header">
+      <span class="modal-title">{{ title }}</span>
+      <button class="close-button" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <p>{{ message }}</p>
+    </div>
+
+    <div class="modal-footer" *ngIf="showConfirm">
+      <button class="confirm-button" (click)="onConfirm()">Conferma</button>
+      <button class="cancel-button" (click)="onClose()">Annulla</button>
+    </div>
+  </div>
+</div>
