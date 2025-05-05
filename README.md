@@ -80,6 +80,7 @@ dotnet run
 - [docs/ARCHITETTURA.md] → Struttura tecnica e flusso dati
 - [.github/workflows/ci.yml] → Build automatica
 - [docs/Features.md](docs/Features.md)
+-
 
 ### 📈 Sviluppi futuri
 
