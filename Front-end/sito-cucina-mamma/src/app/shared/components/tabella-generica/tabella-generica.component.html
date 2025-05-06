@@ -1,0 +1,30 @@
+<article class="table-widget">
+  <div class="caption">
+    <h2>Tabella Dati</h2>
+    <button type="button" class="export-btn" (click)="exportToCSV()">
+      Export
+    </button>
+  </div>
+
+  <table #tableRef id="team-table">
+    <thead>
+      <tr>
+        <th
+          *ngFor="let col of colonne; let i = index"
+          class="resizable"
+          (click)="sortTableByColumn(i)"
+        >
+          {{ col.intestazione }}
+          <span *ngIf="currentSortColumn === i">
+            {{ currentSortDirection === 'asc' ? '▲' : '▼' }}
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of dati">
+        <td *ngFor="let col of colonne">{{ r[col.campo] }}</td>
+      </tr>
+    </tbody>
+  </table>
+</article>

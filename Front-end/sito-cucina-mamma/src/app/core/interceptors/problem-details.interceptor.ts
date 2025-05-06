@@ -9,15 +9,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AlertModalService } from '../services/alert-modal.service';
 
-interface ApiProblem {
-  status: number;
-  title: string;
-  userMessage?: string;
-  severity?: 'Info' | 'Warning' | 'Error' | 'Fatal';
-  errors?: Record<string, string[]>;
-  retryAfter?: number;
-}
-
+import { ApiProblem, Severity2Type } from '../models/problem.models';
 @Injectable({ providedIn: 'root' })
 export class ProblemDetailsInterceptor implements HttpInterceptor {
   constructor(private alerts: AlertModalService) {}

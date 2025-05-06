@@ -1,0 +1,89 @@
+<div [formGroup]="formGroup">
+  <!-- Slug -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error': submitted && formGroup.get('slug')?.invalid,
+      }"
+      class="form-label"
+    >
+      Slug*
+      <app-icon-warning
+        *ngIf="submitted && formGroup.get('slug')?.invalid"
+        title="Inserisci uno slug valido"
+        class="icon-inline"
+      />
+    </label>
+    <input
+      type="text"
+      formControlName="slug"
+      (focus)="markSlugTouched()"
+      placeholder="es. dolci-facili"
+      [ngClass]="{
+        'input-error': submitted && formGroup.get('slug')?.invalid,
+      }"
+    />
+    <small class="text-sm text-gray-500">
+      Lo slug viene generato automaticamente ma puoi modificarlo se desideri un
+      URL personalizzato.
+    </small>
+  </div>
+
+  <!-- SEO Title -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error': submitted && formGroup.get('seoTitle')?.invalid,
+      }"
+      class="form-label"
+    >
+      Titolo SEO*
+      <app-icon-warning
+        *ngIf="submitted && formGroup.get('seoTitle')?.invalid"
+        title="Il titolo SEO è obbligatorio (max 70 caratteri)"
+        class="icon-inline"
+      />
+    </label>
+    <input
+      type="text"
+      formControlName="seoTitle"
+      (focus)="markSeoTitleTouched()"
+      [attr.maxLength]="70"
+      [ngClass]="{
+        'input-error': submitted && formGroup.get('seoTitle')?.invalid,
+      }"
+    />
+    <small class="text-sm text-gray-500">
+      {{ formGroup.get('seoTitle')?.value.length || 0 }}/70 caratteri
+    </small>
+  </div>
+
+  <!-- SEO Description -->
+  <div class="form-group">
+    <label
+      [ngClass]="{
+        'label-error': submitted && formGroup.get('seoDescription')?.invalid,
+      }"
+      class="form-label"
+    >
+      Descrizione SEO*
+      <app-icon-warning
+        *ngIf="submitted && formGroup.get('seoDescription')?.invalid"
+        title="La descrizione SEO è obbligatoria (max 160 caratteri)"
+        class="icon-inline"
+      />
+    </label>
+    <textarea
+      formControlName="seoDescription"
+      (focus)="markSeoDescriptionTouched()"
+      rows="3"
+      [attr.maxLength]="160"
+      [ngClass]="{
+        'input-error': submitted && formGroup.get('seoDescription')?.invalid,
+      }"
+    ></textarea>
+    <small class="text-sm text-gray-500">
+      {{ formGroup.get('seoDescription')?.value.length || 0 }}/160 caratteri
+    </small>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+.table-widget {
+  background: #fff;
+  border-radius: 1rem;
+  overflow-x: auto;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  width: 100%;
+
+  .caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .export-btn {
+      padding: 0.5rem 1rem;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+      position: relative;
+    }
+
+    th.resizable {
+      cursor: col-resize;
+      position: relative;
+    }
+
+    th.resizable::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 5px;
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    tbody tr:hover {
+      background: #f8f8f8;
+    }
+  }
+  th.resizable {
+    position: relative;
+
+    .resizer {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      cursor: col-resize;
+      background: rgba(0, 0, 0, 0.05);
+      z-index: 1;
+    }
+  }
+}

@@ -14,6 +14,8 @@ import { Immagine } from '../../../../../core/models/immagine';
 import { GestioneImmaginiComponent } from '../../../../../shared/components/gestione-immagini/gestione-immagini.component';
 import { ImmagineForm } from '../../../../../core/models/ImmagineForm';
 import { AlertModalService } from '../../../../../core/services/alert-modal.service';
+import { applyServerErrors } from '../../../../../core/utils/apply-server-errors';
+import { SeoFieldsComponent } from '../../../../../shared/components/seo-fields/seo-fields.component';
 
 @Component({
   selector: 'app-aggiungi-categoria',
@@ -23,6 +25,7 @@ import { AlertModalService } from '../../../../../core/services/alert-modal.serv
     ReactiveFormsModule,
     GestioneImmaginiComponent,
     IconWarningComponent,
+    SeoFieldsComponent,
   ],
   templateUrl: './aggiungi-categoria.component.html',
   styleUrls: ['./aggiungi-categoria.component.scss'],
@@ -32,7 +35,6 @@ export class AggiungiCategoriaComponent implements AfterViewInit {
   showImmagineModal = false;
   immagineSelezionata?: Immagine;
   immagini: ImmagineForm[] = [];
-  slugModificatoDallUtente = false;
   submitted = false;
 
   constructor(
@@ -49,16 +51,6 @@ export class AggiungiCategoriaComponent implements AfterViewInit {
       seoTitle: ['', [Validators.required, Validators.maxLength(70)]],
       seoDescription: ['', [Validators.required, Validators.maxLength(160)]],
     });
-
-    // Slug autogenerato live
-    this.categoriaForm.get('nome')?.valueChanges.subscribe((val: string) => {
-      const slug = val
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-');
-      this.categoriaForm.get('slug')?.setValue(slug, { emitEvent: false });
-    });
   }
 
   get categoriaNonValidaOImmaginiIncomplete(): boolean {
@@ -68,10 +60,9 @@ export class AggiungiCategoriaComponent implements AfterViewInit {
         this.immagini.some((img) => !img.alt?.trim() || !img.title?.trim()))
     );
   }
+
   ngAfterViewInit() {
-    this.categoriaForm.get('slug')?.valueChanges.subscribe(() => {
-      this.slugModificatoDallUtente = true;
-    });
+    // Lo slug viene ora gestito nel componente SeoFieldsComponent
   }
 
   apriGestioneImmagineModal() {
@@ -168,12 +159,7 @@ export class AggiungiCategoriaComponent implements AfterViewInit {
             .upload('categoria', categoria.id, formData)
             .subscribe({
               next: () => this.router.navigate(['/admin/categorie']),
-              error: (err) => {
-                this.alertModalService.handleHttpError(
-                  err,
-                  'Errore durante il caricamento delle immagini',
-                );
-              },
+              error: (p) => applyServerErrors(this.categoriaForm, p.errors),
             });
         } else {
           this.router.navigate(['/admin/categorie']);

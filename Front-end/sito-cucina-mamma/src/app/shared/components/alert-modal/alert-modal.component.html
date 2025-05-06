@@ -1,7 +1,12 @@
-<div class="modal-overlay">
+<div
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalTitle"
+>
   <div class="alert-modal" [ngClass]="type">
     <div class="modal-header">
-      <span class="modal-title">{{ title }}</span>
+      <span id="modalTitle" class="modal-title">{{ title }}</span>
       <button class="close-button" (click)="onClose()">✕</button>
     </div>
 

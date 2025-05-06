@@ -71,13 +71,14 @@ export class AppComponent {
     });
   }
 
-  onConfirm() {
-    // ✅ Callback opzionale su pulsante "Conferma" se serve
-    this.alert = null;
+  // chiude e passa all’eventuale prossimo alert
+  onClose(): void {
+    this.alertService.closeAlert();
   }
 
-  onClose() {
-    this.alert = null;
-    this.alertService.closeAlert(); // notifica al servizio
+  // esegue la callback (se c’è) e poi chiude
+  onConfirm(): void {
+    this.alert?.onConfirm?.();
+    this.alertService.closeAlert();
   }
 }

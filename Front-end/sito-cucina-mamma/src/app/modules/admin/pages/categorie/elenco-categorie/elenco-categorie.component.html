@@ -9,81 +9,24 @@
   <div *ngIf="loading" class="loading">⏳ Caricamento in corso...</div>
   <div *ngIf="errore" class="errore">{{ errore }}</div>
 
-  <div class="tabella-wrapper">
-    <table *ngIf="!loading && categorie.length" class="tabella-categorie">
-      <thead>
-        <tr>
-          <th>Immagine Cover</th>
-          <th>Nome</th>
-          <th>Descrizione</th>
-          <th class="col-elimina">Azione</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let categoria of categorie"
-          (click)="vaiModificaCategoria(categoria.id)"
-          title="Clicca per modificare"
-          style="cursor: pointer"
-          @fadeInUp
-        >
-          <td>
-            <img
-              *ngIf="getCoverUrl(categoria)"
-              [src]="getCoverUrl(categoria)"
-              alt="cover"
-              class="cover-img"
-            />
-          </td>
-          <td>{{ categoria.nome }}</td>
-          <td>
-            <ng-container *ngIf="(categoria.descrizione ?? '').length <= 100">
-              {{ categoria.descrizione }}
-            </ng-container>
-            <ng-container *ngIf="(categoria.descrizione ?? '').length > 100">
-              {{ categoria.descrizione | slice: 0 : 100 }}...
-              <span class="mostra-altro">Mostra altro</span>
-            </ng-container>
-          </td>
-          <td class="col-elimina" (click)="$event.stopPropagation()">
-            <button
-              class="btn-action delete modern"
-              (click)="confermaEliminazione(categoria)"
-              title="Elimina categoria"
-            >
-              <svg
-                class="icon-trash"
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"
-                />
-              </svg>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="tabella-wrapper" *ngIf="!loading && categorie.length > 0">
+    <app-tabella-generica
+      [colonne]="colonne"
+      [dati]="categorieConMetadati"
+      (esportaCSV)="(null)"
+    ></app-tabella-generica>
+  </div>
 
-    <app-conferma-dialog
-      *ngIf="mostraModale"
-      [messaggio]="
-        'Sei sicuro di voler eliminare  definitivamente questa categoria?'
-      "
-      (confermato)="eliminaCategoriaSeConfermato()"
-      (annullato)="annullaEliminazione()"
-    ></app-conferma-dialog>
+  <app-conferma-dialog
+    *ngIf="mostraModale"
+    [messaggio]="
+      'Sei sicuro di voler eliminare definitivamente questa categoria?'
+    "
+    (confermato)="eliminaCategoriaSeConfermato()"
+    (annullato)="annullaEliminazione()"
+  ></app-conferma-dialog>
 
-    <div *ngIf="!loading && categorie.length === 0" class="empty">
-      Nessuna categoria trovata.
-    </div>
+  <div *ngIf="!loading && categorie.length === 0" class="empty">
+    Nessuna categoria trovata.
   </div>
 </div>

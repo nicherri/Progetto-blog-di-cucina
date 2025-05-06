@@ -1,0 +1,26 @@
+.icon-warning {
+  width: 100%;
+  cursor: pointer;
+}
+
+.circle,
+.exclamation line {
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+  transition: stroke-dashoffset 1.6s ease-in-out;
+}
+
+.exclamation circle {
+  transform: scale(0);
+  transform-origin: center;
+  transition: transform 1.6s ease-in-out;
+}
+
+.icon-warning:hover .circle,
+.icon-warning:hover .exclamation line {
+  stroke-dashoffset: 0;
+}
+
+.icon-warning:hover .exclamation circle {
+  transform: scale(1);
+}
