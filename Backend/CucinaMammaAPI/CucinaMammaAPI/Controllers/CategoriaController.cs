@@ -1,296 +1,232 @@
 ﻿using CucinaMammaAPI.Data;
 using CucinaMammaAPI.DTOs;
 using CucinaMammaAPI.Enums;
+using CucinaMammaAPI.Infrastructure.Errors;   // ← ProblemFactory
 using CucinaMammaAPI.Interfaces;
 using CucinaMammaAPI.Models;
 using CucinaMammaAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CucinaMammaAPI.Controllers
+namespace CucinaMammaAPI.Controllers;
+
+/// <summary>API REST per la gestione delle categorie.</summary>
+[ApiController]
+[Route("api/[controller]")]
+public sealed class CategoriaController : ControllerBase
 {
-    /// <summary>
-    /// Controller per la gestione delle Categorie, che si appoggia a ICategoriaRepository
-    /// (implementato da CategoriaService).
-    /// </summary>
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CategoriaController : ControllerBase
+    private readonly ICategoriaRepository _categoriaRepo;
+    private readonly IImmagineService _immagineService;
+    private readonly AppDbContext _ctx;
+
+    public CategoriaController(
+        ICategoriaRepository categoriaRepo,
+        IImmagineService immagineService,
+        AppDbContext ctx)
     {
-        private readonly ICategoriaRepository _categoriaRepo;
-        private readonly IImmagineService _immagineService;
+        _categoriaRepo = categoriaRepo;
+        _immagineService = immagineService;
+        _ctx = ctx;
+    }
 
-        private readonly AppDbContext _context;
+    /* ═════════════════════════════════════ 1) CRUD BASE ═════════════════════════════════════ */
 
-        /// <summary>
-        /// Iniettiamo l'interfaccia del repository, che in realtà è istanziata come CategoriaService.
-        /// </summary>
-        /// <param name="categoriaRepo">Implementazione di ICategoriaRepository (CategoriaService).</param>
-        public CategoriaController(
-     ICategoriaRepository categoriaRepo,
-     IImmagineService immagineService, 
-     AppDbContext context) 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetAllCategorie()
+    {
+        var model = await _categoriaRepo.GetAllCategorieAsync();
+
+        var dto = model.Select(cat => new CategoriaDTO
         {
-            _categoriaRepo = categoriaRepo;
-            _immagineService = immagineService;  
-            _context = context;  
+            Id = cat.Id,
+            Nome = cat.Nome,
+            Descrizione = cat.Descrizione,
+            Immagini = cat.Immagini.Select(i => new ImmagineDTO
+            {
+                Id = i.Id,
+                Url = i.Url,
+                IsCover = i.IsCover
+            }).ToList()
+        });
+
+        return Ok(dto);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCategoriaById(int id)
+    {
+        var cat = await _categoriaRepo.GetCategoriaByIdAsync(id);
+        if (cat == null)
+            return ProblemFactory.NotFound("Categoria", HttpContext).ToObjectResult();
+
+        var dto = new CategoriaDTO
+        {
+            Id = cat.Id,
+            Nome = cat.Nome,
+            Descrizione = cat.Descrizione,
+            Immagini = cat.Immagini.Select(i => new ImmagineDTO
+            {
+                Id = i.Id,
+                Url = i.Url,
+                IsCover = i.IsCover
+            }).ToList()
+        };
+        return Ok(dto);
+    }
+
+    [HttpPost]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> CreaCategoria([FromForm] CategoriaDTO dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Nome))
+        {
+            var errors = new Dictionary<string, string[]> { ["nome"] = ["Il nome è obbligatorio."] };
+            return ProblemFactory.Validation(errors, HttpContext).ToObjectResult();
         }
 
-        // =============================================================================
-        // 1) CRUD BASE
-        // =============================================================================
-
-        /// <summary>
-        /// Restituisce tutte le categorie presenti nel DB.
-        /// Nota: Il metodo del repository ritorna List<Categoria> (Model),
-        /// quindi qui facciamo la mappatura in DTO prima di rispondere al client.
-        /// </summary>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetAllCategorie()
+        var nuova = new Categoria
         {
-            var categorieModel = await _categoriaRepo.GetAllCategorieAsync();
+            Nome = dto.Nome.Trim(),
+            Descrizione = dto.Descrizione?.Trim() ?? string.Empty,
+            Slug = dto.Slug?.Trim(),
+            SeoTitle = dto.SeoTitle?.Trim(),
+            SeoDescription = dto.SeoDescription?.Trim()
+        };
 
-            var categorieDto = categorieModel.Select(cat => new CategoriaDTO
+        var creata = await _categoriaRepo.AddCategoriaAsync(nuova);
+
+        // upload singola immagine se presente
+        if (dto.ImmagineFile is not null)
+        {
+            var imgs = await _immagineService.UploadImmaginiAsync(
+                            EntitaTipo.Categoria, creata.Id,
+                            new List<IFormFile> { dto.ImmagineFile });
+
+            var img = imgs.FirstOrDefault();
+            if (img is not null)
             {
-                Id = cat.Id,
-                Nome = cat.Nome,
-                Descrizione = cat.Descrizione,
-                Immagini = cat.Immagini.Select(img => new ImmagineDTO
+                creata.Immagini.Add(new Immagine
                 {
                     Id = img.Id,
                     Url = img.Url,
-                    IsCover = img.IsCover
-                }).ToList()
-            }).ToList();
-
-            return Ok(categorieDto);
-        }
-
-
-        /// <summary>
-        /// Recupera una singola categoria per ID, se esiste.
-        /// </summary>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CategoriaDTO>> GetCategoriaById(int id)
-        {
-            var categoria = await _categoriaRepo.GetCategoriaByIdAsync(id);
-            if (categoria == null)
-                return NotFound(new { message = $"Categoria con ID {id} non trovata." });
-
-            var categoriaDto = new CategoriaDTO
-            {
-                Id = categoria.Id,
-                Nome = categoria.Nome,
-                Descrizione = categoria.Descrizione,
-                Immagini = categoria.Immagini.Select(img => new ImmagineDTO
-                {
-                    Id = img.Id,
-                    Url = img.Url,
-                    IsCover = img.IsCover
-                }).ToList()
-            };
-
-            return Ok(categoriaDto);
-        }
-
-
-        /// <summary>
-        /// Crea una nuova categoria. 
-        /// Nota: l'interfaccia richiede di usare AddCategoriaAsync(Categoria),
-        /// quindi convertiamo da DTO a Model prima di chiamarlo.
-        /// </summary>
-
-
-        [HttpPost]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> CreaCategoria([FromForm] CategoriaDTO categoriaDto)
-        {
-            if (string.IsNullOrWhiteSpace(categoriaDto.Nome))
-            {
-                return BadRequest(new { message = "Il nome della categoria è obbligatorio" });
+                    IsCover = img.IsCover,
+                    CategoriaId = creata.Id
+                });
+                await _ctx.SaveChangesAsync();
             }
-
-            // 🔁 Mappatura completa da DTO a Model (lo slug verrà gestito nel Service)
-            var nuovaCategoria = new Categoria
-            {
-                Nome = categoriaDto.Nome.Trim(),
-                Descrizione = categoriaDto.Descrizione?.Trim() ?? string.Empty,
-                Slug = categoriaDto.Slug?.Trim(), // anche se nullo va bene, il Service lo genera
-                SeoTitle = categoriaDto.SeoTitle?.Trim(),
-                SeoDescription = categoriaDto.SeoDescription?.Trim()
-            };
-
-            // 🔹 Salva categoria senza immagini per ottenere l'ID
-            var categoriaCreata = await _categoriaRepo.AddCategoriaAsync(nuovaCategoria);
-
-            // 📸 Se è presente un'immagine iniziale (singola), la carichiamo
-            if (categoriaDto.ImmagineFile != null)
-            {
-                var immaginiCaricate = await _immagineService.UploadImmaginiAsync(
-                    EntitaTipo.Categoria,
-                    categoriaCreata.Id,
-                    new List<IFormFile> { categoriaDto.ImmagineFile }
-                );
-
-                if (immaginiCaricate.Any())
-                {
-                    var immagine = immaginiCaricate.First();
-                    categoriaCreata.Immagini.Add(new Immagine
-                    {
-                        Id = immagine.Id,
-                        Url = immagine.Url,
-                        IsCover = immagine.IsCover,
-                        CategoriaId = categoriaCreata.Id
-                    });
-
-                    // 🔄 Salva associazione immagine
-                    await _context.SaveChangesAsync();
-                }
-            }
-
-            // ✅ Torniamo la categoria creata (puoi mappare su un DTO se preferisci)
-            return CreatedAtAction(nameof(GetCategoriaById), new { id = categoriaCreata.Id }, new
-            {
-                categoriaCreata.Id,
-                categoriaCreata.Nome,
-                categoriaCreata.Slug,
-                categoriaCreata.SeoTitle,
-                categoriaCreata.SeoDescription
-            });
         }
 
-        /// <summary>
-        /// Aggiorna i campi di una categoria esistente (nome, descrizione e/o immagine).
-        /// L'interfaccia ha un metodo UpdateCategoriaAsync(int, CategoriaDTO), 
-        /// quindi passiamo ID e DTO direttamente.
-        /// </summary>
-        [HttpPut("{id}")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateCategoria(
-     int id,
-     [FromForm] CategoriaDTO categoriaDto,
-     [FromForm] List<IFormFile>? nuoveImmagini,
-     [FromForm] List<int>? immaginiDaRimuovere)
+        return CreatedAtAction(nameof(GetCategoriaById),
+                               new { id = creata.Id },
+                               new
+                               {
+                                   creata.Id,
+                                   creata.Nome,
+                                   creata.Slug,
+                                   creata.SeoTitle,
+                                   creata.SeoDescription
+                               });
+    }
+
+    [HttpPut("{id}")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UpdateCategoria(
+        int id,
+        [FromForm] CategoriaDTO dto,
+        [FromForm] List<IFormFile>? nuoveImmagini,
+        [FromForm] List<int>? immaginiDaRimuovere)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Nome))
         {
-            if (string.IsNullOrWhiteSpace(categoriaDto.Nome))
-                return BadRequest(new { message = "Il campo 'Nome' è obbligatorio." });
-
-            var categoriaEsistente = await _categoriaRepo.GetCategoriaByIdAsync(id);
-            if (categoriaEsistente == null)
-                return NotFound(new { message = $"Categoria con ID {id} non trovata." });
-
-            // 🔄 Eseguiamo l'aggiornamento, compresi slug e meta SEO
-            var esito = await _categoriaRepo.UpdateCategoriaAsync(id, categoriaDto, nuoveImmagini, immaginiDaRimuovere);
-
-            if (!esito)
-                return StatusCode(500, new { message = "Errore nell'aggiornamento della categoria." });
-
-            return NoContent();
+            var errors = new Dictionary<string, string[]> { ["nome"] = ["Il nome è obbligatorio."] };
+            return ProblemFactory.Validation(errors, HttpContext).ToObjectResult();
         }
 
+        if (!await _categoriaRepo.CategoriaExistsAsync(id))
+            return ProblemFactory.NotFound("Categoria", HttpContext).ToObjectResult();
 
-        /// <summary>
-        /// Elimina una categoria esistente (ID).
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategoriaAsync(int id)
-        {
-            var categoria = await _context.Categorie
-                .Include(c => c.Immagini) // Includi le immagini per rimuoverle
-                .FirstOrDefaultAsync(c => c.Id == id);
+        var ok = await _categoriaRepo.UpdateCategoriaAsync(id, dto, nuoveImmagini, immaginiDaRimuovere);
+        if (!ok)
+            return ProblemFactory.Internal("Aggiornamento categoria fallito", HttpContext).ToObjectResult();
 
-            if (categoria == null)
-                return NotFound(new { message = $"Categoria con ID {id} non trovata." });
+        return NoContent();
+    }
 
-            // 🔹 Rimuoviamo le immagini prima di eliminare la categoria
-            foreach (var img in categoria.Immagini.ToList()) // Converti in lista per evitare problemi di enumerazione
-            {
-                await _immagineService.DeleteImmagineAsync(img.Id);
-            }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCategoriaAsync(int id)
+    {
+        var cat = await _ctx.Categorie
+                            .Include(c => c.Immagini)
+                            .FirstOrDefaultAsync(c => c.Id == id);
 
-            _context.Categorie.Remove(categoria);
-            await _context.SaveChangesAsync();
+        if (cat is null)
+            return ProblemFactory.NotFound("Categoria", HttpContext).ToObjectResult();
 
-            return NoContent();
-        }
+        // rimuovi immagini collegate
+        foreach (var img in cat.Immagini.ToList())
+            await _immagineService.DeleteImmagineAsync(img.Id);
 
+        _ctx.Categorie.Remove(cat);
+        await _ctx.SaveChangesAsync();
+        return NoContent();
+    }
 
+    /* ═════════════════╗ RELAZIONI RICETTE ╔═════════════════ */
 
-        // =============================================================================
-        // 2) RELAZIONI RICETTA-CATEGORIA
-        // =============================================================================
+    [HttpGet("{id}/ricette")]
+    public async Task<IActionResult> GetRicetteByCategoriaId(int id)
+    {
+        if (!await _categoriaRepo.CategoriaExistsAsync(id))
+            return ProblemFactory.NotFound("Categoria", HttpContext).ToObjectResult();
 
-        /// <summary>
-        /// Recupera tutte le ricette (DTO) associate a una certa categoria.
-        /// </summary>
-        [HttpGet("{id}/ricette")]
-        public async Task<IActionResult> GetRicetteByCategoriaId(int id)
-        {
-            // 1. Controlliamo se la categoria esiste 
-            if (!await _categoriaRepo.CategoriaExistsAsync(id))
-                return NotFound(new { message = $"Categoria con ID {id} non trovata." });
+        var ricette = await _categoriaRepo.GetRicetteByCategoriaIdAsync(id);
+        return Ok(ricette);
+    }
 
-            // 2. Recuperiamo le ricette in DTO
-            var ricette = await _categoriaRepo.GetRicetteByCategoriaIdAsync(id);
-            return Ok(ricette);
-        }
+    [HttpGet("ricette/{ricettaId}")]
+    public async Task<IActionResult> GetCategorieByRicettaId(int ricettaId)
+    {
+        var categorie = await _categoriaRepo.GetCategorieByRicettaIdAsync(ricettaId);
+        return Ok(categorie);
+    }
 
-        /// <summary>
-        /// Recupera tutte le categorie (DTO) a cui appartiene una data ricetta.
-        /// </summary>
-        [HttpGet("ricette/{ricettaId}")]
-        public async Task<IActionResult> GetCategorieByRicettaId(int ricettaId)
-        {
-            var categorie = await _categoriaRepo.GetCategorieByRicettaIdAsync(ricettaId);
-            return Ok(categorie);
-        }
+    [HttpPost("{id}/ricette/{ricettaId}")]
+    public async Task<IActionResult> AddRicettaToCategoria(int id, int ricettaId)
+    {
+        var ok = await _categoriaRepo.AddRicettaToCategoriaAsync(ricettaId, id);
+        if (!ok)
+            return ProblemFactory.Conflict("Ricetta già associata alla categoria", HttpContext)
+                                 .ToObjectResult();
 
-        /// <summary>
-        /// Aggiunge la relazione molti-a-molti tra una categoria (id) e una ricetta (ricettaId).
-        /// </summary>
-        [HttpPost("{id}/ricette/{ricettaId}")]
-        public async Task<IActionResult> AddRicettaToCategoria(int id, int ricettaId)
-        {
-            var esito = await _categoriaRepo.AddRicettaToCategoriaAsync(ricettaId, id);
-            if (!esito)
-                return BadRequest(new { message = $"Impossibile aggiungere ricetta {ricettaId} alla categoria {id} (già associati o dati non validi)." });
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    [HttpDelete("{id}/ricette/{ricettaId}")]
+    public async Task<IActionResult> RemoveRicettaFromCategoria(int id, int ricettaId)
+    {
+        var ok = await _categoriaRepo.RemoveRicettaFromCategoriaAsync(ricettaId, id);
+        if (!ok)
+            return ProblemFactory.NotFound("Relazione ricetta-categoria", HttpContext).ToObjectResult();
 
-        /// <summary>
-        /// Rimuove la relazione molti-a-molti tra una categoria (id) e una ricetta (ricettaId).
-        /// </summary>
-        [HttpDelete("{id}/ricette/{ricettaId}")]
-        public async Task<IActionResult> RemoveRicettaFromCategoria(int id, int ricettaId)
-        {
-            var esito = await _categoriaRepo.RemoveRicettaFromCategoriaAsync(ricettaId, id);
-            if (!esito)
-                return BadRequest(new { message = $"Impossibile rimuovere ricetta {ricettaId} dalla categoria {id} (relazione inesistente?)." });
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    /* ═════════════════╗ RELAZIONI SOTTOCATEGORIE ╔═════════════════ */
 
-        // =============================================================================
-        [HttpGet("{id}/sottocategorie")]
-        public async Task<IActionResult> GetSottoCategorieByCategoriaId(int id)
-        {
-            if (!await _categoriaRepo.CategoriaExistsAsync(id))
-                return NotFound(new { message = $"Categoria con ID {id} non trovata." });
+    [HttpGet("{id}/sottocategorie")]
+    public async Task<IActionResult> GetSottoCategorieByCategoriaId(int id)
+    {
+        if (!await _categoriaRepo.CategoriaExistsAsync(id))
+            return ProblemFactory.NotFound("Categoria", HttpContext).ToObjectResult();
 
-            var sottoCategorie = await _categoriaRepo.GetSottoCategorieByCategoriaIdAsync(id);
-            return Ok(sottoCategorie);
-        }
+        var sotto = await _categoriaRepo.GetSottoCategorieByCategoriaIdAsync(id);
+        return Ok(sotto);
+    }
 
-        [HttpGet("sottocategorie/{sottoCategoriaId}/categorie")]
-        public async Task<IActionResult> GetCategorieBySottoCategoriaId(int sottoCategoriaId)
-        {
-            var categorie = await _categoriaRepo.GetCategorieBySottoCategoriaIdAsync(sottoCategoriaId);
-            return Ok(categorie);
-        }
-
-
+    [HttpGet("sottocategorie/{sottoCategoriaId}/categorie")]
+    public async Task<IActionResult> GetCategorieBySottoCategoriaId(int sottoCategoriaId)
+    {
+        var cat = await _categoriaRepo.GetCategorieBySottoCategoriaIdAsync(sottoCategoriaId);
+        return Ok(cat);
     }
 }
